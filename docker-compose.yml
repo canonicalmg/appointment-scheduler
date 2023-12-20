@@ -1,0 +1,31 @@
+version: '2.1'
+
+services:
+  db:
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=django_db
+      - POSTGRES_USER=django_user
+      - POSTGRES_PASSWORD=django_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+  web:
+    build: ./
+    # command: python manage.py runserver
+    # command: tail -f /dev/null
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./.env
+    environment:
+      - DATABASE_URL=postgres://django_user:django_password@db:5432/django_db
+
+  redis:
+    image: "redis:alpine"
+    
+volumes:
+  postgres_data:
+
